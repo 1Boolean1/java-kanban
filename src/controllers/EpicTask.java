@@ -5,7 +5,7 @@ import enums.Status;
 import java.util.ArrayList;
 
 public class EpicTask extends Task {
-    private ArrayList<SubTask> subTasks;
+    private final ArrayList<SubTask> subTasks;
 
     public EpicTask(String epicTaskName, String epicTaskDescription, int epicTaskId, ArrayList<SubTask> subTasks) {
         super(epicTaskName, epicTaskDescription, epicTaskId);
@@ -14,7 +14,7 @@ public class EpicTask extends Task {
 
     public void addSubTask(SubTask subTask) {
         subTasks.add(subTask);
-        if(getTaskStatus().equals(Status.DONE)){
+        if (getTaskStatus().equals(Status.DONE)) {
             setTaskStatus(Status.IN_PROGRESS);
         }
     }
@@ -35,12 +35,12 @@ public class EpicTask extends Task {
                 '}';
     }
 
-    public void changeSubTaskStatus(int subTaskId){
+    public void changeSubTaskStatus(int subTaskId) {
         subTaskId -= 1;
-        if (getSubTasks().get(subTaskId).getTaskStatus().equals(Status.NEW)){
+        if (getSubTasks().get(subTaskId).getTaskStatus().equals(Status.NEW)) {
             getSubTasks().get(subTaskId).setTaskStatus(Status.IN_PROGRESS);
             System.out.println("subStatus changed to in progress");
-            if(getTaskStatus().equals(Status.NEW)){
+            if (getTaskStatus().equals(Status.NEW)) {
                 setTaskStatus(Status.IN_PROGRESS);
                 System.out.println("epicStatus changed to in progress");
             }
@@ -48,13 +48,13 @@ public class EpicTask extends Task {
             getSubTasks().get(subTaskId).setTaskStatus(Status.DONE);
             System.out.println("subStatus changed to done");
             int numOfSubTasksWithDone = 0;
-            for(int i = 1; i <= getSubTasks().size(); i++){
-                if(getSubTasks().
-                        get(subTaskId).getTaskStatus().equals(Status.DONE)){
+            for (int i = 1; i <= getSubTasks().size(); i++) {
+                if (getSubTasks().
+                        get(subTaskId).getTaskStatus().equals(Status.DONE)) {
                     numOfSubTasksWithDone++;
                 }
             }
-            if (numOfSubTasksWithDone == getSubTasks().size()){
+            if (numOfSubTasksWithDone == getSubTasks().size()) {
                 setTaskStatus(Status.DONE);
                 System.out.println("epicStatus changed to DONE");
             }

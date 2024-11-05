@@ -11,8 +11,8 @@ import java.util.Scanner;
 
 public class TaskManager {
     private int numOfTasks = 0;
-    HashMap<Integer, Task> tasks = new HashMap<>();
-    HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
     Scanner scanner = new Scanner(System.in);
 
     public void addTask() {
@@ -35,8 +35,8 @@ public class TaskManager {
         }
     }
 
-    public void update(Integer id, String newName, String newDescription){
-        if(tasks.containsKey(id)){
+    public void updateTask(Integer id, String newName, String newDescription) {
+        if (tasks.containsKey(id)) {
             tasks.get(id).setTaskName(newName);
             tasks.get(id).setTaskDescription(newDescription);
         } else if (epicTasks.containsKey(id)) {

@@ -1,6 +1,6 @@
 package controllers;
 
-public class SubTask extends Task{
+public class SubTask extends Task {
 
     public SubTask(String subTaskName, String subTaskDescription,
                    int subTaskId) {
