@@ -1,10 +1,18 @@
 package controllers;
 
 public class SubTask extends Task {
+    protected int epicId;
 
-    public SubTask(String subTaskName, String subTaskDescription,
-                   int subTaskId) {
-        super(subTaskName, subTaskDescription, subTaskId);
+    public int getEpicId() {
+        return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
+    }
+    public SubTask(String subTaskName, String subTaskDescription, int epicId) {
+        super(subTaskName, subTaskDescription);
+        this.epicId = epicId;
     }
 
 

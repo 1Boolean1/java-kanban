@@ -5,14 +5,13 @@ import enums.Status;
 public class Task {
     private String taskName;
     private String taskDescription;
-    private final int taskId;
+    private int taskId;
     private Status taskStatus;
 
 
-    public Task(String taskName, String taskDescription, int taskId) {
+    public Task(String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
-        this.taskId = taskId;
         this.taskStatus = Status.NEW;
     }
 
@@ -49,12 +48,8 @@ public class Task {
     public void changeTaskStatus() {
         if (getTaskStatus().equals(Status.NEW)) {
             setTaskStatus(Status.IN_PROGRESS);
-            System.out.println("taskStatus changed to in progress");
         } else if (getTaskStatus().equals(Status.IN_PROGRESS)) {
             setTaskStatus(Status.DONE);
-            System.out.println("taskStatus changed to done");
-        } else {
-            System.out.println("error");
         }
     }
 
@@ -64,5 +59,9 @@ public class Task {
 
     public void setTaskDescription(String taskDescription) {
         this.taskDescription = taskDescription;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
     }
 }

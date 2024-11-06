@@ -3,24 +3,29 @@ package controllers;
 import enums.Status;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class EpicTask extends Task {
-    private final ArrayList<SubTask> subTasks;
 
-    public EpicTask(String epicTaskName, String epicTaskDescription, int epicTaskId, ArrayList<SubTask> subTasks) {
-        super(epicTaskName, epicTaskDescription, epicTaskId);
-        this.subTasks = subTasks;
+    public HashMap<Integer, SubTask> getSubTasks() {
+        return subTasks;
     }
 
-    public void addSubTask(SubTask subTask) {
-        subTasks.add(subTask);
+    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+
+    public ArrayList<SubTask> getSubTasksArray() {
+        return new ArrayList<>(subTasks.values());
+    }
+
+    public EpicTask(String epicTaskName, String epicTaskDescription) {
+        super(epicTaskName, epicTaskDescription);
+    }
+
+    public void addSubTask(SubTask subTask, Integer id) {
+        subTasks.put(id, subTask);
         if (getTaskStatus().equals(Status.DONE)) {
             setTaskStatus(Status.IN_PROGRESS);
         }
-    }
-
-    public ArrayList<SubTask> getSubTasks() {
-        return subTasks;
     }
 
 
@@ -35,31 +40,50 @@ public class EpicTask extends Task {
                 '}';
     }
 
+    public void changeEpicTaskStatus() {
+        if (getSubTasks().isEmpty()) {
+            setTaskStatus(Status.NEW);
+        } else{
+            int numOfSubTasksWithDone = 0;
+            int numOfSubTasksWithNew = 0;
+            for (SubTask subTask : getSubTasks().values()) {
+                if (subTask.getTaskStatus().equals(Status.DONE)) {
+                    numOfSubTasksWithDone++;
+                } else if (subTask.getTaskStatus().equals(Status.NEW)) {
+                    numOfSubTasksWithNew++;
+                }
+            }
+            if (numOfSubTasksWithDone == getSubTasksArray().size()) {
+                setTaskStatus(Status.DONE);
+            } else if (numOfSubTasksWithNew == getSubTasksArray().size()) {
+                setTaskStatus(Status.NEW);
+            } else {
+                setTaskStatus(Status.IN_PROGRESS);
+            }
+        }
+    }
+
     public void changeSubTaskStatus(int subTaskId) {
-        subTaskId -= 1;
         if (getSubTasks().get(subTaskId).getTaskStatus().equals(Status.NEW)) {
             getSubTasks().get(subTaskId).setTaskStatus(Status.IN_PROGRESS);
-            System.out.println("subStatus changed to in progress");
             if (getTaskStatus().equals(Status.NEW)) {
                 setTaskStatus(Status.IN_PROGRESS);
-                System.out.println("epicStatus changed to in progress");
             }
         } else if (getSubTasks().get(subTaskId).getTaskStatus().equals(Status.IN_PROGRESS)) {
             getSubTasks().get(subTaskId).setTaskStatus(Status.DONE);
-            System.out.println("subStatus changed to done");
             int numOfSubTasksWithDone = 0;
-            for (int i = 1; i <= getSubTasks().size(); i++) {
-                if (getSubTasks().
-                        get(subTaskId).getTaskStatus().equals(Status.DONE)) {
+            for (SubTask subTask : getSubTasks().values()) {
+                if (subTask.getTaskStatus().equals(Status.DONE)) {
                     numOfSubTasksWithDone++;
                 }
             }
-            if (numOfSubTasksWithDone == getSubTasks().size()) {
+            if (numOfSubTasksWithDone == getSubTasksArray().size()) {
                 setTaskStatus(Status.DONE);
-                System.out.println("epicStatus changed to DONE");
             }
-        } else {
-            System.out.println("error");
         }
+    }
+
+    public void removeSubTask(int id) {
+        subTasks.remove(id);
     }
 }
