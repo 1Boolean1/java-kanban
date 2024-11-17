@@ -1,17 +1,24 @@
-package model;
+package controllers;
 
-import controllers.EpicTask;
-import controllers.SubTask;
-import controllers.Task;
+import model.EpicTask;
+import model.SubTask;
+import model.Task;
 import enums.Status;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int numOfTasks = 0;
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, EpicTask> epicTasks = new HashMap<>();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
 
     @Override
     public int addNewTask(Task task) {
@@ -125,7 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(Integer taskId) {
-        Managers.getDefaultHistory().add(tasks.get(taskId));
+        historyManager.add(tasks.get(taskId));
         return tasks.getOrDefault(taskId, null);
     }
 

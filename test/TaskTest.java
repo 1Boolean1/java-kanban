@@ -1,6 +1,6 @@
-import controllers.Task;
-import model.InMemoryTaskManager;
-import model.TaskManager;
+import model.Task;
+import controllers.InMemoryTaskManager;
+import controllers.TaskManager;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

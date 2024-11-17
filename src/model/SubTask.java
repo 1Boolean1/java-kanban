@@ -1,4 +1,4 @@
-package controllers;
+package model;
 
 public class SubTask extends Task {
     protected int epicId;

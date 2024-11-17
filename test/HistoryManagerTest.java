@@ -1,9 +1,9 @@
-import controllers.EpicTask;
-import controllers.Task;
-import model.HistoryManager;
-import model.InMemoryHistoryManager;
-import model.InMemoryTaskManager;
-import model.TaskManager;
+import model.EpicTask;
+import model.Task;
+import controllers.HistoryManager;
+import controllers.InMemoryHistoryManager;
+import controllers.InMemoryTaskManager;
+import controllers.TaskManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

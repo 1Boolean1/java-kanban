@@ -1,11 +1,12 @@
-package model;
+package controllers;
 
-import controllers.EpicTask;
-import controllers.SubTask;
-import controllers.Task;
 import enums.Status;
+import model.EpicTask;
+import model.SubTask;
+import model.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     int addNewTask(Task task);
@@ -41,5 +42,7 @@ public interface TaskManager {
     Task getEpicTask(Integer taskId);
 
     Task getSubTask(Integer taskId);
+
+    List<Task> getHistory();
 
 }

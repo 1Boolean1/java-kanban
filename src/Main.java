@@ -1,9 +1,9 @@
-import controllers.EpicTask;
-import controllers.SubTask;
-import controllers.Task;
-import model.InMemoryTaskManager;
-import model.Managers;
-import model.TaskManager;
+import model.EpicTask;
+import model.SubTask;
+import model.Task;
+import controllers.InMemoryTaskManager;
+import controllers.Managers;
+import controllers.TaskManager;
 
 public class Main {
     public static void main(String[] args) {
