@@ -9,7 +9,7 @@ public class HistoryManagerTest {
     TaskManager memoryManager = Managers.getDefault();
 
     @Test
-    public void checkHistoryManager(){
+    public void checkHistoryManager() {
         Task newTask = new Task("new task", "its new task");
         memoryManager.addNewTask(newTask);
         Assertions.assertEquals(newTask, memoryManager.getHistory().getFirst(),

@@ -14,7 +14,7 @@ public class EpicTaskTest {
     TaskManager manager = new InMemoryTaskManager();
 
     @Test
-    void addNewEpic(){
+    void addNewEpic() {
         EpicTask epicTask = new EpicTask("Test addNewEpic", "Test addNewEpic description");
         SubTask subTask = new SubTask("new sub task", "new sub");
         final int taskId = manager.addNewEpicTask(epicTask);
