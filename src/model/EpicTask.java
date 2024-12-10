@@ -43,7 +43,7 @@ public class EpicTask extends Task {
     public void changeEpicTaskStatus() {
         if (getSubTasks().isEmpty()) {
             setTaskStatus(Status.NEW);
-        } else{
+        } else {
             int numOfSubTasksWithDone = 0;
             int numOfSubTasksWithNew = 0;
             for (SubTask subTask : getSubTasks().values()) {

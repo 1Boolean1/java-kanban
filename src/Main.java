@@ -1,35 +1,35 @@
+import controllers.InMemoryTaskManager;
+import controllers.TaskManager;
 import model.EpicTask;
 import model.SubTask;
 import model.Task;
-import controllers.InMemoryTaskManager;
-import controllers.Managers;
-import controllers.TaskManager;
 
 public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new InMemoryTaskManager();
-        Task firstTask = new Task("new task", "its new task");
+        Task firstTask = new Task("firstTask", "");
         taskManager.addNewTask(firstTask);
-        Task secondTask = new Task("second task", "its second task");
+        Task secondTask = new Task("secondTask", "");
         taskManager.addNewTask(secondTask);
-        EpicTask firstEpicTask = new EpicTask("new epic task", "its new epic task");
-        taskManager.addNewEpicTask(firstEpicTask);
-        SubTask firstSub = new SubTask("new sub", "its new sub task");
-        taskManager.addNewSubTask(firstSub, firstEpicTask.getTaskId());
-        SubTask secondSub = new SubTask("second sub", "its second sub task");
-        EpicTask secondEpic = new EpicTask("second epic", "its second epic");
+        EpicTask firstEpic = new EpicTask("firstEpic", "");
+        taskManager.addNewEpicTask(firstEpic);
+        SubTask firstSub = new SubTask("firstSub", "");
+        taskManager.addNewSubTask(firstSub, firstEpic.getTaskId());
+        SubTask secondSub = new SubTask("secondSub", "");
+        taskManager.addNewSubTask(secondSub, firstEpic.getTaskId());
+        SubTask thirdSub = new SubTask("thirdSub", "");
+        taskManager.addNewSubTask(thirdSub, firstEpic.getTaskId());
+        EpicTask secondEpic = new EpicTask("secondEpic", "");
         taskManager.addNewEpicTask(secondEpic);
-        SubTask thirdSub = new SubTask("thirdSub", "its thirdSub");
-        taskManager.updateTaskStatus(1);
-        taskManager.updateTaskStatus(1);
-        Task task = taskManager.getTask(2);
-        Task task2 = taskManager.getTask(1);
-        taskManager.updateTaskStatus(2);
-        taskManager.updateTaskStatus(4);
-        taskManager.updateTaskStatus(7);
-        taskManager.updateTaskStatus(7);
+        taskManager.getTask(1);
+        taskManager.getSubTask(5);
+        printAllTasks(taskManager);
+        taskManager.getEpicTask(7);
+        taskManager.getTask(1);
+        printAllTasks(taskManager);
         taskManager.deleteById(1);
-        taskManager.deleteById(7);
+        printAllTasks(taskManager);
+        taskManager.deleteById(3);
         printAllTasks(taskManager);
     }
 
@@ -50,8 +50,6 @@ public class Main {
         }
 
         System.out.println("История:");
-        for (Task task : Managers.getDefaultHistory().getHistory()) {
-            System.out.println(task);
-        }
+        System.out.println(manager.getHistory());
     }
 }
