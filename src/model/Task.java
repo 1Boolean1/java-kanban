@@ -47,7 +47,7 @@ public class Task {
         return taskDescription;
     }
 
-    public int getTaskId() {
+    public Integer getTaskId() {
         return taskId;
     }
 
