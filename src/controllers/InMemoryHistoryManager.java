@@ -51,10 +51,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void linkLast(Node node) {
         if (head == null) {
             head = node;
+            tail = node;
         } else {
             tail.next = node;
+            node.prev = tail;
+            tail = node;
         }
-        tail = node;
     }
 
     private void removeNode(Node node) {
@@ -63,13 +65,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             head = node.next;
         }
-
         if (node.next != null) {
             node.next.prev = node.prev;
         } else {
             tail = node.prev;
         }
-
         node.next = null;
         node.prev = null;
     }
