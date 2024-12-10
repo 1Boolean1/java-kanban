@@ -2,10 +2,7 @@ package controllers;
 
 import model.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -54,12 +51,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void linkLast(Node node) {
         if (head == null) {
             head = node;
-            tail = node;
         } else {
             tail.next = node;
-            node.prev = tail;
-            tail = node;
         }
+        tail = node;
     }
 
     private void removeNode(Node node) {
@@ -77,5 +72,28 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         node.next = null;
         node.prev = null;
+    }
+
+    public class Node {
+        public final Task task;
+        public Node prev;
+        public Node next;
+
+        Node(Task task) {
+            this.task = task;
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            if (this == object) return true;
+            if (object == null || getClass() != object.getClass()) return false;
+            Node node = (Node) object;
+            return Objects.equals(task, node.task) && Objects.equals(prev, node.prev) && Objects.equals(next, node.next);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(task, prev, next);
+        }
     }
 }
