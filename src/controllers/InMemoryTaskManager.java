@@ -71,6 +71,9 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.addAll(getTasks());
         tasks.addAll(getEpicTasks());
+        for (EpicTask epicTask : epicTasks.values()) {
+            tasks.addAll(epicTask.getSubTasksArray());
+        }
         return tasks;
     }
 

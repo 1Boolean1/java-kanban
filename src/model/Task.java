@@ -15,6 +15,13 @@ public class Task {
         this.taskStatus = Status.NEW;
     }
 
+    public Task(int taskId, String taskName, String taskDescription, Status taskStatus) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskStatus = taskStatus;
+    }
+
     public Task() {
         super();
     }
@@ -29,6 +36,7 @@ public class Task {
         return super.equals(obj);
     }
 
+
     @Override
     public String toString() {
         return "Task{" +
@@ -37,6 +45,10 @@ public class Task {
                 ", taskId=" + taskId +
                 ", taskStatus=" + taskStatus +
                 '}';
+    }
+
+    public String getType(){
+        return "TASK";
     }
 
     public String getTaskName() {
