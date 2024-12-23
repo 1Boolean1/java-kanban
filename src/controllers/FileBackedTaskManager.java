@@ -1,6 +1,7 @@
 package controllers;
 
 import enums.Status;
+import exceptions.ManagerSaveException;
 import model.EpicTask;
 import model.SubTask;
 import model.Task;
@@ -35,6 +36,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
+        } catch (Exception e) {
+            throw new ManagerSaveException("Can't read form file: " + file.getName());
         }
     }
 
@@ -78,30 +81,34 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void loadFromFile() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        bufferedReader.readLine();
-        while (bufferedReader.ready()) {
-            String str = bufferedReader.readLine();
-            if (str.split(",")[1].equals("TASK")) {
-                Task newTask = new Task(Integer.parseInt(str.split(",")[0]),
-                        str.split(",")[2], str.split(",")[4],
-                        Status.valueOf(str.split(",")[3]));
-                addNewTask(newTask);
-            } else if (str.split(",")[1].equals("EPIC")) {
-                EpicTask newTask = new EpicTask(Integer.parseInt(str.split(",")[0]),
-                        str.split(",")[2], str.split(",")[4],
-                        Status.valueOf(str.split(",")[3]));
-                addNewEpicTask(newTask);
-            } else if (str.split(",")[1].equals("SUB")) {
-                SubTask newTask = new SubTask(Integer.parseInt(str.split(",")[0]),
-                        str.split(",")[2], str.split(",")[4],
-                        Status.valueOf(str.split(",")[3]),
-                        Integer.parseInt(str.split(",")[5]));
-                addNewSubTask(newTask, Integer.parseInt(str.split(",")[5]));
+    public void loadFromFile() {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+            bufferedReader.readLine();
+            while (bufferedReader.ready()) {
+                String str = bufferedReader.readLine();
+                if (str.split(",")[1].equals("TASK")) {
+                    Task newTask = new Task(Integer.parseInt(str.split(",")[0]),
+                            str.split(",")[2], str.split(",")[4],
+                            Status.valueOf(str.split(",")[3]));
+                    addNewTask(newTask);
+                } else if (str.split(",")[1].equals("EPIC")) {
+                    EpicTask newTask = new EpicTask(Integer.parseInt(str.split(",")[0]),
+                            str.split(",")[2], str.split(",")[4],
+                            Status.valueOf(str.split(",")[3]));
+                    addNewEpicTask(newTask);
+                } else if (str.split(",")[1].equals("SUB")) {
+                    SubTask newTask = new SubTask(Integer.parseInt(str.split(",")[0]),
+                            str.split(",")[2], str.split(",")[4],
+                            Status.valueOf(str.split(",")[3]),
+                            Integer.parseInt(str.split(",")[5]));
+                    addNewSubTask(newTask, Integer.parseInt(str.split(",")[5]));
+                }
             }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new ManagerSaveException("Can't read form file: " + file.getName());
         }
-        bufferedReader.close();
     }
 }
 
