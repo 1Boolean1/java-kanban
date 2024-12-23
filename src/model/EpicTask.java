@@ -21,6 +21,13 @@ public class EpicTask extends Task {
         super(epicTaskName, epicTaskDescription);
     }
 
+    public EpicTask(int epicTaskId, String epicTaskName, String epicTaskDescription, Status epicTaskStatus) {
+        super(epicTaskId, epicTaskName, epicTaskDescription, epicTaskStatus);
+    }
+
+    public String getType() {
+        return "EPIC";
+    }
 
     public void addSubTask(SubTask subTask, Integer id) {
         subTasks.put(id, subTask);
@@ -43,7 +50,7 @@ public class EpicTask extends Task {
     public void changeEpicTaskStatus() {
         if (getSubTasks().isEmpty()) {
             setTaskStatus(Status.NEW);
-        } else{
+        } else {
             int numOfSubTasksWithDone = 0;
             int numOfSubTasksWithNew = 0;
             for (SubTask subTask : getSubTasks().values()) {

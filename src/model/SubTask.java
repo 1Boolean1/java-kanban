@@ -1,5 +1,7 @@
 package model;
 
+import enums.Status;
+
 public class SubTask extends Task {
     protected int epicId;
 
@@ -13,7 +15,15 @@ public class SubTask extends Task {
 
     public SubTask(String subTaskName, String subTaskDescription) {
         super(subTaskName, subTaskDescription);
-        //this.epicId = epicId;
+    }
+
+    public SubTask(int subTaskId, String subTaskName, String subTaskDescription, Status subTaskStatus, int epicId) {
+        super(subTaskId, subTaskName, subTaskDescription, subTaskStatus);
+        this.epicId = epicId;
+    }
+
+    public String getType() {
+        return "SUB";
     }
 
 
