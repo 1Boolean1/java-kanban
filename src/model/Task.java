@@ -47,7 +47,7 @@ public class Task {
                 '}';
     }
 
-    public String getType(){
+    public String getType() {
         return "TASK";
     }
 
