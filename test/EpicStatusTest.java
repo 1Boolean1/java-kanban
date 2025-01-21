@@ -11,7 +11,7 @@ public class EpicStatusTest {
     TaskManager manager = new InMemoryTaskManager();
 
     @Test
-    void allSubIsNew(){
+    void allSubIsNew() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
         SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
         SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
@@ -25,7 +25,7 @@ public class EpicStatusTest {
     }
 
     @Test
-    void allSubIsDone(){
+    void allSubIsDone() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
         SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
         SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
@@ -44,7 +44,7 @@ public class EpicStatusTest {
     }
 
     @Test
-    void subWithDoneAndNew(){
+    void subWithDoneAndNew() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
         SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
         SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
@@ -61,7 +61,7 @@ public class EpicStatusTest {
     }
 
     @Test
-    void allSubsIsIn_progress(){
+    void allSubsIsIn_progress() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
         SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
         SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
