@@ -10,9 +10,6 @@ import java.util.Objects;
 
 public class EpicTask extends Task {
 
-    Duration duration = null;
-    LocalDateTime startTime = null;
-
     public HashMap<Integer, SubTask> getSubTasks() {
         return subTasks;
     }
@@ -94,10 +91,7 @@ public class EpicTask extends Task {
 
     @Override
     public Duration getDuration() {
-        return subTasks.values().stream()
-                .filter(subTask -> subTask.getDuration() != null)
-                .map(SubTask::getDuration)
-                .reduce(Duration.ZERO, Duration::plus);
+        return Duration.between(getStartTime(), getEndTime());
     }
 
 
@@ -117,8 +111,12 @@ public class EpicTask extends Task {
 
     @Override
     public LocalDateTime getEndTime() {
-        if (getStartTime() != null && getDuration() != null) {
-            return getStartTime().plus(getDuration());
+        if (!subTasks.isEmpty()) {
+            return subTasks.values().stream()
+                    .map(SubTask::getEndTime)
+                    .filter(Objects::nonNull)
+                    .max(LocalDateTime::compareTo)
+                    .orElse(null);
         } else {
             return null;
         }

@@ -10,8 +10,8 @@ public class Task {
     private String taskDescription;
     private int taskId;
     private Status taskStatus;
-    Duration duration;
-    LocalDateTime startTime;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
 
     public Task(String taskName, String taskDescription) {

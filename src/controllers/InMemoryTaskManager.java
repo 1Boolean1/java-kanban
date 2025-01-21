@@ -62,7 +62,6 @@ public class InMemoryTaskManager implements TaskManager {
             epicTask.addSubTask(subTask, id);
             epicTask.changeEpicTaskStatus();
             if (subTask.getStartTime() != null && subTask.getDuration() != null && !tasksSortByTime.contains(epicTask)) {
-                tasksSortByTime.add(epicTask);
                 tasksSortByTime.add(subTask);
             }
             return id;
@@ -137,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
             Task taskToRemove = tasks.get(id);
             tasks.remove(id);
             historyManager.remove(taskToRemove);
+            tasksSortByTime.remove(taskToRemove);
         } else if (epicTasks.containsKey(id)) {
             EpicTask epicTaskToRemove = epicTasks.get(id);
             epicTasks.remove(id);
@@ -148,6 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
                         SubTask subTaskToRemove = epicTasks.get(key).getSubTasks().get(id);
                         epicTasks.get(key).getSubTasks().remove(id);
                         historyManager.remove(subTaskToRemove);
+                        tasksSortByTime.remove(subTaskToRemove);
                         epicTasks.get(key).changeEpicTaskStatus();
                     });
         }
@@ -210,13 +211,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTasks() {
         tasks.values().forEach(historyManager::remove);
+        tasks.values().forEach(tasksSortByTime::remove);
         tasks.clear();
     }
 
     @Override
     public void deleteSubTasks() {
-        epicTasks.values().forEach(epicTask ->
-                epicTask.getSubTasks().values().forEach(historyManager::remove)
+        epicTasks.values().forEach(epicTask -> {
+                    epicTask.getSubTasks().values().forEach(historyManager::remove);
+                    epicTask.getSubTasks().values().forEach(tasksSortByTime::remove);
+                }
         );
         epicTasks.values().forEach(epicTask -> epicTask.getSubTasks().clear());
     }
