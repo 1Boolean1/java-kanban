@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class IntervalTest {
 
     @Test
-    void crossTimeTest(){
+    void crossTimeTest() {
         TaskManager manager = new InMemoryTaskManager();
         Task firstTask = new Task("firstTask", "",
                 Duration.ofDays(2), LocalDateTime.of(2025, 1, 21, 15, 41));
@@ -23,7 +23,7 @@ public class IntervalTest {
         Task thirdTask = new Task("thirdTask", "",
                 Duration.ofDays(2), LocalDateTime.of(2024, 1, 20, 15, 41));
         manager.addNewTask(thirdTask);
-        Task taskWithoutTime = new Task("withotTime", "");
+        Task taskWithoutTime = new Task("withoutTime", "");
         manager.addNewTask(taskWithoutTime);
 
         assertNull(manager.getTask(secondTask.getTaskId()), "Interval error, its crossind tasks");
