@@ -2,6 +2,9 @@ package model;
 
 import enums.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     protected int epicId;
 
@@ -17,8 +20,13 @@ public class SubTask extends Task {
         super(subTaskName, subTaskDescription);
     }
 
-    public SubTask(int subTaskId, String subTaskName, String subTaskDescription, Status subTaskStatus, int epicId) {
-        super(subTaskId, subTaskName, subTaskDescription, subTaskStatus);
+    public SubTask(String subTaskName, String subTaskDescription, Duration subTaskDuration, LocalDateTime subTaskStartTime) {
+        super(subTaskName, subTaskDescription, subTaskDuration, subTaskStartTime);
+        this.setTaskStatus(Status.NEW);
+    }
+
+    public SubTask(int subTaskId, String subTaskName, String subTaskDescription, Status subTaskStatus, Duration subTaskDuration, LocalDateTime subTaskStartTime, int epicId) {
+        super(subTaskId, subTaskName, subTaskDescription, subTaskStatus, subTaskDuration, subTaskStartTime);
         this.epicId = epicId;
     }
 
@@ -29,11 +37,10 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "subTask{" +
-                "subTaskName='" + getTaskName() + '\'' +
-                ", subTaskDescription='" + getTaskDescription() + '\'' +
-                ", subTaskId=" + getTaskId() +
-                ", subTaskStatus=" + getTaskStatus() +
-                '}';
+        if (getDuration() != null) {
+            return "subTask{" + "subTaskName='" + getTaskName() + '\'' + ", subTaskDescription='" + getTaskDescription() + '\'' + ", subTaskId=" + getTaskId() + ", subTaskStatus=" + getTaskStatus() + ", subTaskDuration=" + getDuration().toMinutes() + ", subTaskStartTime=" + getStartTime() + '}';
+        } else {
+            return "subTask{" + "subTaskName='" + getTaskName() + '\'' + ", subTaskDescription='" + getTaskDescription() + '\'' + ", subTaskId=" + getTaskId() + ", subTaskStatus=" + getTaskStatus() + '}';
+        }
     }
 }

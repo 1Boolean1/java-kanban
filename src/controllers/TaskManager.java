@@ -31,7 +31,7 @@ public interface TaskManager {
 
     ArrayList<Task> getTasks();
 
-    ArrayList<SubTask> getSubTasks();
+    List<SubTask> getSubTasks();
 
     ArrayList<SubTask> getSubTasksById(Integer subTaskId);
 
