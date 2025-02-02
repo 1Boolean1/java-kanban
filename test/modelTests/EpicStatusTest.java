@@ -15,12 +15,12 @@ public class EpicStatusTest {
     @Test
     void allSubIsNew() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
-        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
-        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
+        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub", epicTask.getTaskId());
+        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub", epicTask.getTaskId());
 
         manager.addNewEpicTask(epicTask);
-        manager.addNewSubTask(subTask1, epicTask.getTaskId());
-        manager.addNewSubTask(subTask2, epicTask.getTaskId());
+        manager.addNewSubTask(subTask1);
+        manager.addNewSubTask(subTask2);
 
         assertEquals(manager.getEpicTask(epicTask.getTaskId()).getTaskStatus(), Status.NEW,
                 "Error with new subs");
@@ -29,13 +29,12 @@ public class EpicStatusTest {
     @Test
     void allSubIsDone() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
-        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
-        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
-
-
         manager.addNewEpicTask(epicTask);
-        manager.addNewSubTask(subTask1, epicTask.getTaskId());
-        manager.addNewSubTask(subTask2, epicTask.getTaskId());
+        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub", epicTask.getTaskId());
+        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub", epicTask.getTaskId());
+
+        manager.addNewSubTask(subTask1);
+        manager.addNewSubTask(subTask2);
         manager.updateTaskStatus(subTask1.getTaskId());
         manager.updateTaskStatus(subTask1.getTaskId());
         manager.updateTaskStatus(subTask2.getTaskId());
@@ -48,13 +47,12 @@ public class EpicStatusTest {
     @Test
     void subWithDoneAndNew() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
-        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
-        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
-
-
         manager.addNewEpicTask(epicTask);
-        manager.addNewSubTask(subTask1, epicTask.getTaskId());
-        manager.addNewSubTask(subTask2, epicTask.getTaskId());
+        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub", epicTask.getTaskId());
+        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub", epicTask.getTaskId());
+
+        manager.addNewSubTask(subTask1);
+        manager.addNewSubTask(subTask2);
         manager.updateTaskStatus(subTask1.getTaskId());
         manager.updateTaskStatus(subTask1.getTaskId());
 
@@ -65,13 +63,12 @@ public class EpicStatusTest {
     @Test
     void allSubsIsIn_progress() {
         EpicTask epicTask = new EpicTask("epicTask", "newEpic");
-        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub");
-        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub");
-
-
         manager.addNewEpicTask(epicTask);
-        manager.addNewSubTask(subTask1, epicTask.getTaskId());
-        manager.addNewSubTask(subTask2, epicTask.getTaskId());
+        SubTask subTask1 = new SubTask("firstSub", "itsFirstSub", epicTask.getTaskId());
+        SubTask subTask2 = new SubTask("secondSub", "itsSecondSub", epicTask.getTaskId());
+
+        manager.addNewSubTask(subTask1);
+        manager.addNewSubTask(subTask2);
         manager.updateTaskStatus(subTask1.getTaskId());
         manager.updateTaskStatus(subTask2.getTaskId());
 

@@ -13,7 +13,7 @@ public interface TaskManager {
 
     int addNewEpicTask(EpicTask epicTask);
 
-    Integer addNewSubTask(SubTask subTask, int id);
+    Integer addNewSubTask(SubTask subTask);
 
     ArrayList<Task> printAllTasks();
 

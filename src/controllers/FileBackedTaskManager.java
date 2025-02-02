@@ -68,8 +68,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void addSubTask(SubTask subtask, EpicTask epic) {
-        super.addNewSubTask(subtask, epic.getTaskId());
+    public void addSubTask(SubTask subtask) {
+        super.addNewSubTask(subtask);
         save();
     }
 
@@ -111,7 +111,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     case "SUB" -> {
                         int epicId = Integer.parseInt(fields[7]);
                         SubTask subTask = new SubTask(id, name, description, status, duration, startTime, epicId);
-                        super.addNewSubTask(subTask, epicId);
+                        super.addNewSubTask(subTask);
                     }
                 }
             }

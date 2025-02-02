@@ -5,6 +5,8 @@ import model.SubTask;
 import model.Task;
 import enums.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,14 +52,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Integer addNewSubTask(SubTask subTask, int epicId) {
+    public Integer addNewSubTask(SubTask subTask) {
         if (!isTimeCrossing(subTask)) {
-            EpicTask epicTask = epicTasks.get(epicId);
+            EpicTask epicTask = epicTasks.get(subTask.getEpicId());
             if (epicTask == null) {
                 return null;
             }
             final int id = ++numOfTasks;
-            subTask.setEpicId(epicId);
             subTask.setTaskId(id);
             epicTask.addSubTask(subTask, id);
             epicTask.changeEpicTaskStatus();
@@ -66,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
             return id;
         } else {
-            return 0;
+            return null;
         }
     }
 
@@ -94,7 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks;
     }
 
-    public void updateTask(Integer id, String newName, String newDescription) {
+    public boolean updateTask(Integer id, String newName, String newDescription) {
         if (tasks.containsKey(id)) {
             tasks.get(id).setTaskName(newName);
             tasks.get(id).setTaskDescription(newDescription);
@@ -110,6 +111,37 @@ public class InMemoryTaskManager implements TaskManager {
                         epicTasks.get(key).changeEpicTaskStatus();
                     });
         }
+        return true;
+    }
+
+    public boolean updateTask(Integer id, String newName, String newDescription, Duration duration, LocalDateTime time) {
+        if (tasks.containsKey(id)) {
+            if (!isTimeCrossing(tasks.get(id))) {
+                tasks.get(id).setTaskName(newName);
+                tasks.get(id).setTaskDescription(newDescription);
+                tasks.get(id).setDuration(duration);
+                tasks.get(id).setStartTime(time);
+                return true;
+            } else {
+                return false;
+            }
+        } else if (epicTasks.containsKey(id)) {
+            return false;
+        } else {
+            for (Integer key : epicTasks.keySet()) {
+                if (epicTasks.get(key).getSubTasks().containsKey(id)) {
+                    if (!isTimeCrossing(epicTasks.get(key))) {
+                        epicTasks.get(key).getSubTasks().get(id).setTaskName(newName);
+                        epicTasks.get(key).getSubTasks().get(id).setTaskDescription(newDescription);
+                        epicTasks.get(key).getSubTasks().get(id).setDuration(duration);
+                        epicTasks.get(key).getSubTasks().get(id).setStartTime(time);
+                        epicTasks.get(key).changeEpicTaskStatus();
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -162,7 +194,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getEpicTask(Integer taskId) {
+    public EpicTask getEpicTask(Integer taskId) {
         Managers.getDefaultHistory().add(epicTasks.get(taskId));
         return epicTasks.getOrDefault(taskId, null);
     }
@@ -189,9 +221,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<SubTask> getSubTasks() {
-        List<SubTask> subTasks = epicTasks.values().stream()
+        return epicTasks.values().stream()
                 .flatMap(epicTask -> epicTask.getSubTasksArray().stream()).collect(Collectors.toList());
-        return subTasks;
     }
 
     @Override
@@ -236,15 +267,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean isTimeCrossing(Task task) {
-        if (task.getStartTime() != null) {
-            if (!tasksSortByTime.isEmpty()) {
-                return tasksSortByTime.stream()
-                        .anyMatch(x ->
-                                (x.getStartTime().isBefore(task.getEndTime()) && x.getEndTime().isAfter(task.getStartTime()))
-                        );
-            } else {
-                return false;
-            }
+        if (task.getStartTime() != null && !tasksSortByTime.isEmpty()) {
+            return tasksSortByTime.stream()
+                    .anyMatch(x ->
+                            (x.getStartTime().isBefore(task.getEndTime()) && x.getEndTime().isAfter(task.getStartTime()))
+                    );
         } else {
             return false;
         }

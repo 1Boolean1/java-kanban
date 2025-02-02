@@ -14,7 +14,7 @@ public class EpicTask extends Task {
         return subTasks;
     }
 
-    private final HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private final HashMap<Integer, SubTask> subTasks;
 
     public ArrayList<SubTask> getSubTasksArray() {
         return new ArrayList<>(subTasks.values());
@@ -22,10 +22,13 @@ public class EpicTask extends Task {
 
     public EpicTask(String epicTaskName, String epicTaskDescription) {
         super(epicTaskName, epicTaskDescription);
+        setTaskStatus(Status.NEW);
+        subTasks = new HashMap<>();
     }
 
     public EpicTask(int epicTaskId, String epicTaskName, String epicTaskDescription, Status epicTaskStatus) {
         super(epicTaskId, epicTaskName, epicTaskDescription, epicTaskStatus);
+        subTasks = new HashMap<>();
     }
 
     public String getType() {
@@ -76,6 +79,7 @@ public class EpicTask extends Task {
             long numOfSubTasksWithDone = getSubTasks().values().stream()
                     .filter(subTask -> subTask.getTaskStatus().equals(Status.DONE))
                     .count();
+
             long numOfSubTasksWithNew = getSubTasks().values().stream()
                     .filter(subTask -> subTask.getTaskStatus().equals(Status.NEW))
                     .count();
@@ -91,7 +95,9 @@ public class EpicTask extends Task {
 
     @Override
     public Duration getDuration() {
-        return Duration.between(getStartTime(), getEndTime());
+        LocalDateTime start = getStartTime();
+        LocalDateTime end = getEndTime();
+        return (start != null && end != null) ? Duration.between(start, end) : Duration.ZERO;
     }
 
 
@@ -111,14 +117,11 @@ public class EpicTask extends Task {
 
     @Override
     public LocalDateTime getEndTime() {
-        if (!subTasks.isEmpty()) {
-            return subTasks.values().stream()
-                    .map(SubTask::getEndTime)
-                    .filter(Objects::nonNull)
-                    .max(LocalDateTime::compareTo)
-                    .orElse(null);
-        } else {
-            return null;
-        }
+        return subTasks.values().stream()
+                .map(SubTask::getEndTime)
+                .filter(Objects::nonNull)  // Исключаем null перед max()
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
     }
+
 }
