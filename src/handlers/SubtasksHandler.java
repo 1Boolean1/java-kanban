@@ -57,7 +57,6 @@ public class SubtasksHandler extends BaseHandler implements HttpHandler {
 
         if (taskOpt.isPresent()) {
             SubTask subTask = taskOpt.get();
-            System.out.println(subTask);
             subTask.setTaskStatus(Status.NEW);
             List<Task> epicTasks = taskManager.getEpicTasks().stream().filter(epicTask -> epicTask.getTaskId() == subTask.getEpicId()).toList();
             if (!epicTasks.isEmpty()) {

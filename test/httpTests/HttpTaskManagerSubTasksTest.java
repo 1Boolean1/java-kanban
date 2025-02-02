@@ -46,7 +46,9 @@ public class HttpTaskManagerSubTasksTest {
 
     @Test
     public void testAddSub() throws IOException, InterruptedException {
-        SubTask task = new SubTask("Test 2", "Testing task 2", 1);
+        EpicTask epicTask = new EpicTask("et", "");
+        manager.addNewEpicTask(epicTask);
+        SubTask task = new SubTask("Test 2", "Testing task 2", epicTask.getTaskId());
 
         String taskJson = gson.toJson(task);
 
