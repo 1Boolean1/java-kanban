@@ -3,7 +3,6 @@ package handlers;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import controllers.TaskManager;
-import enums.Endpoint;
 import model.Task;
 
 import java.io.IOException;
@@ -20,26 +19,26 @@ public class TasksHandler extends BaseHandler {
     }
 
     @Override
-    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.GET_TASKS)) {
-            handleGetTasks(exchange);
-        } else if (endpoint.equals(Endpoint.GET_TASK_BY_ID)) {
+    protected void processGet(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleGetTaskById(exchange);
+        } else if (exchange.getRequestURI().getPath().split("/").length == 3) {
+            handleGetTasks(exchange);
         }
     }
 
     @Override
-    protected void processPost(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.POST_ADD_TASK)) {
+    protected void processPost(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 2) {
             handleAddTask(exchange);
-        } else if (endpoint.equals(Endpoint.POST_UPDATE_TASK)) {
+        } else if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleUpdateTask(exchange);
         }
     }
 
     @Override
-    protected void processDelete(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.DELETE_TASK)) {
+    protected void processDelete(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleDeleteTask(exchange);
         }
     }

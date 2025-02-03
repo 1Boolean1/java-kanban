@@ -3,7 +3,6 @@ package handlers;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import controllers.TaskManager;
-import enums.Endpoint;
 import model.EpicTask;
 
 import java.io.IOException;
@@ -20,26 +19,27 @@ public class EpicsHandler extends BaseHandler {
     }
 
     @Override
-    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.GET_EPICS)) {
+    protected void processGet(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 2) {
             handleGetEpics(exchange);
-        } else if (endpoint.equals(Endpoint.GET_EPIC_BY_ID)) {
+        } else if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleGetEpicById(exchange);
-        } else if (endpoint.equals(Endpoint.GET_EPIC_SUBTASKS)) {
+        } else if (exchange.getRequestURI().getPath().split("/").length == 4 &&
+                exchange.getRequestURI().getPath().split("/")[3].equals("subtasks")) {
             handleGetEpicSubtasks(exchange);
         }
     }
 
     @Override
-    protected void processPost(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.POST_ADD_EPIC)) {
+    protected void processPost(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 2) {
             handleAddEpic(exchange);
         }
     }
 
     @Override
-    protected void processDelete(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.DELETE_EPIC)) {
+    protected void processDelete(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleDeleteEpic(exchange);
         }
     }

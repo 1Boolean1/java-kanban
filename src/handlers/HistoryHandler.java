@@ -2,7 +2,6 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import controllers.TaskManager;
-import enums.Endpoint;
 
 import java.io.IOException;
 
@@ -15,8 +14,9 @@ public class HistoryHandler extends BaseHandler {
     }
 
 
-    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.GET_HISTORY)) {
+    @Override
+    protected void processGet(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 2) {
             handleGetHistory(exchange);
         }
     }

@@ -3,7 +3,6 @@ package handlers;
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import controllers.TaskManager;
-import enums.Endpoint;
 import enums.Status;
 import model.SubTask;
 import model.Task;
@@ -22,24 +21,27 @@ public class SubtasksHandler extends BaseHandler {
         this.taskManager = taskManager;
     }
 
-    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.GET_SUBTASKS)) {
+    @Override
+    protected void processGet(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 2) {
             handleGetSubTasks(exchange);
-        } else if (endpoint.equals(Endpoint.GET_SUBTASK_BY_ID)) {
+        } else if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleGetSubTaskById(exchange);
         }
     }
 
-    protected void processPost(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.POST_ADD_SUBTASK)) {
+    @Override
+    protected void processPost(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 2) {
             handleAddSubTask(exchange);
-        } else if (endpoint.equals(Endpoint.POST_UPDATE_SUBTASK)) {
+        } else if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleUpdateSubTask(exchange);
         }
     }
 
-    protected void processDelete(HttpExchange exchange, Endpoint endpoint) throws IOException {
-        if (endpoint.equals(Endpoint.DELETE_SUBTASK)) {
+    @Override
+    protected void processDelete(HttpExchange exchange) throws IOException {
+        if (exchange.getRequestURI().getPath().split("/").length == 3) {
             handleDeleteSubTask(exchange);
         }
     }
