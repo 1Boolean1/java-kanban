@@ -1,7 +1,8 @@
 package httpTests;
 
 import com.google.gson.Gson;
-import controllers.InMemoryTaskManager;
+import controllers.Managers;
+import controllers.TaskManager;
 import handlers.BaseHandler;
 import model.EpicTask;
 import model.SubTask;
@@ -21,12 +22,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HttpTaskManagerSubTasksTest {
+
+    TaskManager manager = Managers.getDefault();
     BaseHandler handler = new BaseHandler();
-    HttpTaskServer taskServer = new HttpTaskServer();
+    HttpTaskServer taskServer = new HttpTaskServer(manager);
 
     Gson gson = handler.getGson();
-
-    InMemoryTaskManager manager = taskServer.getTaskManager();
 
     public HttpTaskManagerSubTasksTest() throws IOException {
     }

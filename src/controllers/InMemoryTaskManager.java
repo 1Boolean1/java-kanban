@@ -95,6 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks;
     }
 
+    @Override
     public boolean updateTask(Integer id, String newName, String newDescription) {
         if (tasks.containsKey(id)) {
             tasks.get(id).setTaskName(newName);
@@ -114,6 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
         return true;
     }
 
+    @Override
     public boolean updateTask(Integer id, String newName, String newDescription, Duration duration, LocalDateTime time) {
         if (tasks.containsKey(id)) {
             if (!isTimeCrossing(tasks.get(id))) {
@@ -262,6 +264,7 @@ public class InMemoryTaskManager implements TaskManager {
         epicTasks.clear();
     }
 
+    @Override
     public TreeSet<Task> getPrioritizedTasks() {
         return tasksSortByTime;
     }

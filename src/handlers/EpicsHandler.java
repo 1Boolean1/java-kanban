@@ -2,8 +2,7 @@ package handlers;
 
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import controllers.InMemoryTaskManager;
+import controllers.TaskManager;
 import enums.Endpoint;
 import model.EpicTask;
 
@@ -12,40 +11,36 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class EpicsHandler extends BaseHandler implements HttpHandler {
+public class EpicsHandler extends BaseHandler {
 
-    private final InMemoryTaskManager taskManager;
+    private final TaskManager taskManager;
 
-    public EpicsHandler(InMemoryTaskManager taskManager) {
+    public EpicsHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-        switch (endpoint) {
-            case GET_EPICS: {
-                handleGetEpics(exchange);
-                break;
-            }
-            case GET_EPIC_BY_ID: {
-                handleGetEpicById(exchange);
-                break;
-            }
-            case DELETE_EPIC: {
-                handleDeleteEpic(exchange);
-                break;
-            }
-            case POST_ADD_EPIC: {
-                handleAddEpic(exchange);
-                break;
-            }
-            case GET_EPIC_SUBTASKS: {
-                handleGetEpicSubtasks(exchange);
-                break;
-            }
-            default:
-                sendNotFound(exchange, "Такого эндпоинта не существует");
+    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.GET_EPICS)) {
+            handleGetEpics(exchange);
+        } else if (endpoint.equals(Endpoint.GET_EPIC_BY_ID)) {
+            handleGetEpicById(exchange);
+        } else if (endpoint.equals(Endpoint.GET_EPIC_SUBTASKS)) {
+            handleGetEpicSubtasks(exchange);
+        }
+    }
+
+    @Override
+    protected void processPost(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.POST_ADD_EPIC)) {
+            handleAddEpic(exchange);
+        }
+    }
+
+    @Override
+    protected void processDelete(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.DELETE_EPIC)) {
+            handleDeleteEpic(exchange);
         }
     }
 

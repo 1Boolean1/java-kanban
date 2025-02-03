@@ -1,38 +1,40 @@
 package server;
 
 import com.sun.net.httpserver.HttpServer;
-import controllers.InMemoryTaskManager;
+import controllers.Managers;
+import controllers.TaskManager;
 import handlers.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class HttpTaskServer {
-    InMemoryTaskManager taskManager = new InMemoryTaskManager();
-    HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+    public static final int PORT = 8080;
+    private final HttpServer server;
 
+    public HttpTaskServer(TaskManager manager) throws IOException {
 
-    public HttpTaskServer() throws IOException {
+        server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
+        server.createContext("/tasks", new TasksHandler(manager));
+        server.createContext("/subtasks", new SubtasksHandler(manager));
+        server.createContext("/epics", new EpicsHandler(manager));
+        server.createContext("/history", new HistoryHandler(manager));
+        server.createContext("/prioritized", new PrioritizedHandler(manager));
     }
 
     public void start() {
-        main();
-    }
-
-    public void stop() {
-        server.stop(1);
-    }
-
-    public void main() {
-        server.createContext("/tasks", new TasksHandler(taskManager));
-        server.createContext("/subtasks", new SubtasksHandler(taskManager));
-        server.createContext("/epics", new EpicsHandler(taskManager));
-        server.createContext("/history", new HistoryHandler(taskManager));
-        server.createContext("/prioritized", new PrioritizedHandler(taskManager));
+        System.out.println("Starting TaskServer " + PORT);
         server.start();
     }
 
-    public InMemoryTaskManager getTaskManager() {
-        return taskManager;
+    public void stop() {
+        server.stop(0);
+        System.out.println("Остановили сервер на порту " + PORT);
+    }
+
+    public static void main(String[] args) throws IOException {
+        TaskManager manager = Managers.getDefault();
+        HttpTaskServer taskServer = new HttpTaskServer(manager);
+        taskServer.start();
     }
 }

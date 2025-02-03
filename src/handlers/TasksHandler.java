@@ -2,8 +2,7 @@ package handlers;
 
 import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import controllers.InMemoryTaskManager;
+import controllers.TaskManager;
 import enums.Endpoint;
 import model.Task;
 
@@ -12,40 +11,36 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class TasksHandler extends BaseHandler implements HttpHandler {
+public class TasksHandler extends BaseHandler {
 
-    private final InMemoryTaskManager taskManager;
+    private final TaskManager taskManager;
 
-    public TasksHandler(InMemoryTaskManager taskManager) {
+    public TasksHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-        switch (endpoint) {
-            case GET_TASKS: {
-                handleGetTasks(exchange);
-                break;
-            }
-            case GET_TASK_BY_ID: {
-                handleGetTaskById(exchange);
-                break;
-            }
-            case DELETE_TASK: {
-                handleDeleteTask(exchange);
-                break;
-            }
-            case POST_UPDATE_TASK: {
-                handleUpdateTask(exchange);
-                break;
-            }
-            case POST_ADD_TASK: {
-                handleAddTask(exchange);
-                break;
-            }
-            default:
-                sendNotFound(exchange, "Такого эндпоинта не существует");
+    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.GET_TASKS)) {
+            handleGetTasks(exchange);
+        } else if (endpoint.equals(Endpoint.GET_TASK_BY_ID)) {
+            handleGetTaskById(exchange);
+        }
+    }
+
+    @Override
+    protected void processPost(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.POST_ADD_TASK)) {
+            handleAddTask(exchange);
+        } else if (endpoint.equals(Endpoint.POST_UPDATE_TASK)) {
+            handleUpdateTask(exchange);
+        }
+    }
+
+    @Override
+    protected void processDelete(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.DELETE_TASK)) {
+            handleDeleteTask(exchange);
         }
     }
 
@@ -103,7 +98,7 @@ public class TasksHandler extends BaseHandler implements HttpHandler {
             Optional<Task> taskOpt = parseTask(exchange.getRequestBody());
             if (taskOpt.isPresent()) {
                 Task updatedTask = taskOpt.get();
-                boolean updated = false;
+                boolean updated;
                 if (updatedTask.getDuration() != null) {
                     updated = taskManager.updateTask(id, updatedTask.getTaskName(), updatedTask.getTaskDescription(), updatedTask.getDuration(), updatedTask.getStartTime());
                 } else {
@@ -133,6 +128,3 @@ public class TasksHandler extends BaseHandler implements HttpHandler {
         }
     }
 }
-
-
-

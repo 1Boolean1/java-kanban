@@ -1,17 +1,18 @@
 package handlers;
 
+import adapters.DurationAdapter;
+import adapters.LocalDateTimeAdapter;
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 import enums.Endpoint;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
-public class BaseHandler {
+public class BaseHandler implements HttpHandler {
 
     protected final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).registerTypeAdapter(Duration.class, new DurationAdapter()).setPrettyPrinting().create();
 
@@ -41,6 +42,14 @@ public class BaseHandler {
 
     protected void sendFieldsAreEmpty(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
+        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        h.sendResponseHeaders(400, resp.length);
+        h.getResponseBody().write(resp);
+        h.close();
+    }
+
+    protected void sendMethodNotAllowed(HttpExchange h) throws IOException {
+        byte[] resp = "METHOD_NOT_ALLOWED".getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(400, resp.length);
         h.getResponseBody().write(resp);
@@ -131,31 +140,35 @@ public class BaseHandler {
         return Endpoint.UNKNOWN;
     }
 
-    private static class DurationAdapter implements JsonSerializer<Duration>, JsonDeserializer<Duration> {
 
-        @Override
-        public JsonElement serialize(Duration duration, Type type, JsonSerializationContext context) {
-            return new JsonPrimitive(duration.toString()); // Преобразуем в строку (ISO-8601)
-        }
-
-        @Override
-        public Duration deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            return Duration.parse(json.getAsString()); // Преобразуем обратно из строки
-        }
-    }
-
-    private static class LocalDateTimeAdapter implements JsonSerializer<LocalDateTime>, JsonDeserializer<LocalDateTime> {
-
-        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        @Override
-        public JsonElement serialize(LocalDateTime dateTime, Type type, JsonSerializationContext context) {
-            return new JsonPrimitive(dateTime.format(formatter)); // Преобразуем в строку
-        }
-
-        @Override
-        public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext context) throws JsonParseException {
-            return LocalDateTime.parse(json.getAsString(), formatter); // Преобразуем обратно
+    public void handle(HttpExchange exchange) throws IOException {
+        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
+        String method = exchange.getRequestMethod();
+        switch (method) {
+            case "GET":
+                processGet(exchange, endpoint);
+                break;
+            case "POST":
+                processPost(exchange, endpoint);
+                break;
+            case "DELETE":
+                processDelete(exchange, endpoint);
+                break;
+            default:
+                sendMethodNotAllowed(exchange);
         }
     }
+
+    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        sendMethodNotAllowed(exchange);
+    }
+
+    protected void processPost(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        sendMethodNotAllowed(exchange);
+    }
+
+    protected void processDelete(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        sendMethodNotAllowed(exchange);
+    }
+
 }

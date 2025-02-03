@@ -1,28 +1,22 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import controllers.InMemoryTaskManager;
+import controllers.TaskManager;
 import enums.Endpoint;
 
 import java.io.IOException;
-import java.util.Objects;
 
-public class PrioritizedHandler extends BaseHandler implements HttpHandler {
+public class PrioritizedHandler extends BaseHandler {
 
-    private final InMemoryTaskManager taskManager;
+    private final TaskManager taskManager;
 
-    public PrioritizedHandler(InMemoryTaskManager taskManager) {
+    public PrioritizedHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
 
-    @Override
-    public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-        if (Objects.requireNonNull(endpoint) == Endpoint.GET_PRIORITIZED) {
+    protected void processGet(HttpExchange exchange, Endpoint endpoint) throws IOException {
+        if (endpoint.equals(Endpoint.GET_PRIORITIZED)) {
             handleGetPrioritized(exchange);
-        } else {
-            sendNotFound(exchange, "Такого эндпоинта не существует");
         }
     }
 
