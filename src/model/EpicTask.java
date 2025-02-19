@@ -2,8 +2,11 @@ package model;
 
 import enums.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class EpicTask extends Task {
 
@@ -11,7 +14,7 @@ public class EpicTask extends Task {
         return subTasks;
     }
 
-    private HashMap<Integer, SubTask> subTasks = new HashMap<>();
+    private final HashMap<Integer, SubTask> subTasks;
 
     public ArrayList<SubTask> getSubTasksArray() {
         return new ArrayList<>(subTasks.values());
@@ -19,40 +22,67 @@ public class EpicTask extends Task {
 
     public EpicTask(String epicTaskName, String epicTaskDescription) {
         super(epicTaskName, epicTaskDescription);
+        setTaskStatus(Status.NEW);
+        subTasks = new HashMap<>();
     }
 
+    public EpicTask(int epicTaskId, String epicTaskName, String epicTaskDescription, Status epicTaskStatus) {
+        super(epicTaskId, epicTaskName, epicTaskDescription, epicTaskStatus);
+        subTasks = new HashMap<>();
+    }
+
+    public String getType() {
+        return "EPIC";
+    }
 
     public void addSubTask(SubTask subTask, Integer id) {
         subTasks.put(id, subTask);
         if (getTaskStatus().equals(Status.DONE)) {
             setTaskStatus(Status.IN_PROGRESS);
         }
+        if (subTask.getDuration() != null) {
+            recalculateEpicTimes();
+        }
+    }
+
+    private void recalculateEpicTimes() {
+        this.startTime = getStartTime();
+        this.duration = getDuration();
     }
 
 
     @Override
     public String toString() {
-        return "EpicTask{" +
-                "EpicTaskName='" + getTaskName() + '\'' +
-                ", EpicTaskDescription='" + getTaskDescription() + '\'' +
-                ", EpicTaskID=" + getTaskId() +
-                ", EpicTaskStatus=" + getTaskStatus() +
-                '}';
+        if (getDuration() != null) {
+            return "EpicTask{" +
+                    "EpicTaskName='" + getTaskName() + '\'' +
+                    ", EpicTaskDescription='" + getTaskDescription() + '\'' +
+                    ", EpicTaskID=" + getTaskId() +
+                    ", EpicTaskStatus=" + getTaskStatus() +
+                    ", EpicTaskDuration=" + getDuration().toMinutes() +
+                    ", EpicTaskStartTime=" + getStartTime() +
+                    '}';
+        } else {
+            return "EpicTask{" +
+                    "EpicTaskName='" + getTaskName() + '\'' +
+                    ", EpicTaskDescription='" + getTaskDescription() + '\'' +
+                    ", EpicTaskID=" + getTaskId() +
+                    ", EpicTaskStatus=" + getTaskStatus() +
+                    '}';
+        }
     }
 
     public void changeEpicTaskStatus() {
         if (getSubTasks().isEmpty()) {
             setTaskStatus(Status.NEW);
-        } else{
-            int numOfSubTasksWithDone = 0;
-            int numOfSubTasksWithNew = 0;
-            for (SubTask subTask : getSubTasks().values()) {
-                if (subTask.getTaskStatus().equals(Status.DONE)) {
-                    numOfSubTasksWithDone++;
-                } else if (subTask.getTaskStatus().equals(Status.NEW)) {
-                    numOfSubTasksWithNew++;
-                }
-            }
+        } else {
+            long numOfSubTasksWithDone = getSubTasks().values().stream()
+                    .filter(subTask -> subTask.getTaskStatus().equals(Status.DONE))
+                    .count();
+
+            long numOfSubTasksWithNew = getSubTasks().values().stream()
+                    .filter(subTask -> subTask.getTaskStatus().equals(Status.NEW))
+                    .count();
             if (numOfSubTasksWithDone == getSubTasksArray().size()) {
                 setTaskStatus(Status.DONE);
             } else if (numOfSubTasksWithNew == getSubTasksArray().size()) {
@@ -63,23 +93,35 @@ public class EpicTask extends Task {
         }
     }
 
-    /*public void changeSubTaskStatus(int subTaskId) {
-        if (getSubTasks().get(subTaskId).getTaskStatus().equals(Status.NEW)) {
-            getSubTasks().get(subTaskId).setTaskStatus(Status.IN_PROGRESS);
-            if (getTaskStatus().equals(Status.NEW)) {
-                setTaskStatus(Status.IN_PROGRESS);
-            }
-        } else if (getSubTasks().get(subTaskId).getTaskStatus().equals(Status.IN_PROGRESS)) {
-            getSubTasks().get(subTaskId).setTaskStatus(Status.DONE);
-            int numOfSubTasksWithDone = 0;
-            for (SubTask subTask : getSubTasks().values()) {
-                if (subTask.getTaskStatus().equals(Status.DONE)) {
-                    numOfSubTasksWithDone++;
-                }
-            }
-            if (numOfSubTasksWithDone == getSubTasksArray().size()) {
-                setTaskStatus(Status.DONE);
-            }
+    @Override
+    public Duration getDuration() {
+        LocalDateTime start = getStartTime();
+        LocalDateTime end = getEndTime();
+        return (start != null && end != null) ? Duration.between(start, end) : Duration.ZERO;
+    }
+
+
+    @Override
+    public LocalDateTime getStartTime() {
+        if (!subTasks.isEmpty()) {
+            return subTasks.values().stream()
+                    .map(SubTask::getStartTime)
+                    .filter(Objects::nonNull)
+                    .min(LocalDateTime::compareTo)
+                    .orElse(null);
+        } else {
+            return null;
         }
-    }*/
+    }
+
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return subTasks.values().stream()
+                .map(SubTask::getEndTime)
+                .filter(Objects::nonNull)  // Исключаем null перед max()
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
+    }
+
 }

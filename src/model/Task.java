@@ -2,17 +2,48 @@ package model;
 
 import enums.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     private String taskName;
     private String taskDescription;
     private int taskId;
     private Status taskStatus;
+    protected Duration duration;
+    protected LocalDateTime startTime;
 
 
     public Task(String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskStatus = Status.NEW;
+    }
+
+    public Task(String taskName, String taskDescription, Duration duration, LocalDateTime startTime) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.taskStatus = Status.NEW;
+    }
+
+    public Task(int taskId, String taskName, String taskDescription,
+                Status taskStatus) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskStatus = taskStatus;
+    }
+
+    public Task(int taskId, String taskName, String taskDescription,
+                Status taskStatus, Duration duration, LocalDateTime startTime) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskStatus = taskStatus;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public Task() {
@@ -29,14 +60,30 @@ public class Task {
         return super.equals(obj);
     }
 
+
     @Override
     public String toString() {
-        return "Task{" +
-                "taskName='" + taskName + '\'' +
-                ", taskDescription='" + taskDescription + '\'' +
-                ", taskId=" + taskId +
-                ", taskStatus=" + taskStatus +
-                '}';
+        if (duration != null) {
+            return "Task{" +
+                    "taskName='" + taskName + '\'' +
+                    ", taskDescription='" + taskDescription + '\'' +
+                    ", taskId=" + taskId +
+                    ", taskStatus=" + taskStatus +
+                    ", taskDuration=" + duration.toMinutes() +
+                    ", taskStartTime=" + startTime +
+                    '}';
+        } else {
+            return "Task{" +
+                    "taskName='" + taskName + '\'' +
+                    ", taskDescription='" + taskDescription + '\'' +
+                    ", taskId=" + taskId +
+                    ", taskStatus=" + taskStatus +
+                    '}';
+        }
+    }
+
+    public String getType() {
+        return "TASK";
     }
 
     public String getTaskName() {
@@ -77,5 +124,25 @@ public class Task {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getEndTime() {
+        return (this.startTime != null && this.duration != null) ? this.startTime.plus(this.duration) : null;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }
